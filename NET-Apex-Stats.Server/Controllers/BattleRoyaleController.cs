@@ -2,11 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using NET_Apex_Stats.Services;
 using NET_Apex_Stats.Server.Models;
-using Microsoft.AspNetCore.Authorization;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using MongoDB.Driver.Linq;
 using System.Security.Claims;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -33,6 +28,8 @@ namespace NET_Apex_Stats.Controllers
         public async Task<List<BattleRoyale>> Get()
         {
             string userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Sid);
+            string refreshToken = _httpContextAccessor.HttpContext.Request.Cookies["refreshToken"];
+            Console.WriteLine($"in get: {refreshToken}");
             return await _mongoDBService.GetAsync(userId);
         }
 
@@ -52,7 +49,7 @@ namespace NET_Apex_Stats.Controllers
                 string userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Sid);
                 battleRoyale.userId = userId;
                 await _mongoDBService.CreateAsync(battleRoyale);
-                return CreatedAtAction(nameof(Get), new { id = battleRoyale.Id, battleRoyale });
+                return CreatedAtAction(nameof(Get), battleRoyale );
             }
             catch
             {

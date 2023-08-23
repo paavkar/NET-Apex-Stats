@@ -26,11 +26,12 @@ namespace NET_Apex_Stats.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(UserDto request)
         {
-            Console.WriteLine(request);
             string username = request.Username;
             string password = request.Password;
+
             User? existingUser = null;
             existingUser = await _mongoDBService.GetUserAsync(username);
+
             if(existingUser != null)
             {
                 return BadRequest("Username must be unique");
@@ -68,6 +69,7 @@ namespace NET_Apex_Stats.Controllers
 
             User? user = null;
             user = await _mongoDBService.GetUserAsync(username);
+
             if (user != null)
             {
                 if (user.Username != request.Username || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
@@ -87,8 +89,11 @@ namespace NET_Apex_Stats.Controllers
         [HttpPost("refresh-token")]
         public async Task<ActionResult<string>> RefreshToken()
         {
-            var refreshToken = Request.Cookies["refreshToken"];
-
+            if(_httpContextAccessor.HttpContext == null)
+            {
+                return BadRequest();
+            }
+            string refreshToken = Request.Cookies["refreshToken"];
             string userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Sid);
 
             User? user = null;

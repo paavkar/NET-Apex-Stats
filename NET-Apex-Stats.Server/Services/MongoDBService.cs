@@ -69,9 +69,9 @@ namespace NET_Apex_Stats.Services
         public async Task<User> GetUserFromIdAsync(string userId)
         {
             FilterDefinition<User> filter = Builders<User>.Filter.Eq("Id", userId);
-            var user = await _userCollection.Find(filter).SingleOrDefaultAsync();
-            //var found_user = await user.SingleOrDefaultAsync();
-            return user;
+            var user = _userCollection.Find(filter);
+            var found_user = await user.SingleOrDefaultAsync();
+            return found_user;
         }
     }
 }

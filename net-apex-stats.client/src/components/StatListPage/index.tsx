@@ -19,7 +19,7 @@ import { apiBaseUrl } from "../../constants";
 import { TableBody } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, setEntries } from "../../state";
-import ResponsiveAppBar from "../navbar";
+import ResponsiveAppBar from "../Navbar";
 
 const StatListPage = () => {
   const dispatch = useDispatch();
@@ -43,7 +43,7 @@ const StatListPage = () => {
       const { data } = await axios.post<Entry>(`${apiBaseUrl}/BattleRoyale`, values, {
         headers: { Authorization: `bearer ${token}` },
       });
-      dispatch(setEntries({ entries: data }));
+        dispatch(setEntries({ entries: entries.concat(data) }));
       closeModal();
     } catch (e: unknown) {
       if (axios.isAxiosError(e)) {
@@ -56,28 +56,31 @@ const StatListPage = () => {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    try {
-      await axios.delete<Entry>(`${apiBaseUrl}/Battleroyale/${id}`, {
-        headers: { Authorization: `bearer ${token}` },
-      });
-      const newEntries = entries.filter(entry => entry.id !== id);
-      dispatch(setEntries({ entries: newEntries }));
-      setDeletionSuccess(true);
-    } catch (e: unknown) {
-      if (axios.isAxiosError(e)) {
-        console.error(e?.response?.data || "Unrecognized axios error");
-        setError(String(e?.response?.data?.error) || "Unrecognized axios error");
-        setDeletionError(true);
-      } else {
-        console.error("Unknown error", e);
-        setError("Unknown error");
-        setDeletionError(true);
-      }
-    }
+    const handleDelete = async (id: string) => {
+        if (window.confirm('Are you sure you want to delete this item?')) {
+            try {
+                await axios.delete<Entry>(`${apiBaseUrl}/Battleroyale/${id}`, {
+                    headers: { Authorization: `bearer ${token}` },
+                });
+                const newEntries = entries.filter(entry => entry.id !== id);
+                dispatch(setEntries({ entries: newEntries }));
+                setDeletionSuccess(true);
+            } catch (e: unknown) {
+                if (axios.isAxiosError(e)) {
+                    console.error(e?.response?.data || "Unrecognized axios error");
+                    setError(String(e?.response?.data?.error) || "Unrecognized axios error");
+                    setDeletionError(true);
+                } else {
+                    console.error("Unknown error", e);
+                    setError("Unknown error");
+                    setDeletionError(true);
+                }
+            }
+        }
+    
   };
 
-  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+  const handleClose = (_event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === "clickaway") {
       return;
     }
