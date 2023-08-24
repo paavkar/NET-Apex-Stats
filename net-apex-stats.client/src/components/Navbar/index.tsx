@@ -50,10 +50,8 @@ function ResponsiveAppBar() {
         dispatch(setEntries({ entries: [] }));
         break;
       case "Profile":
-        /** The user in state is saved as {token: string, user: User} so I have to do this monstrosity
-         * and even though TypeScript complains about it, it works
-         */
-        navigate(`/profile/${user?.user.id}`);
+        if (user == null) return;
+        navigate(`/profile/${user.id}`);
         break;
       default:
         break;

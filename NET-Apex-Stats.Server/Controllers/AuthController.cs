@@ -112,7 +112,7 @@ namespace NET_Apex_Stats.Controllers
             var newRefreshToken = GenerateRefreshToken();
             SetRefreshToken(newRefreshToken, user);
 
-            return Ok((new { token, user }));
+            return Ok(new { user, token });
         }
 
 

@@ -24,20 +24,16 @@ function App() {
   const [loading, setLoading] = useState(false);
 
   const checkToken = async () => {
-      const dateTime = new Date();
-    if (user != null && new Date(user.user.tokenExpires) < dateTime) {
+    const dateTime = new Date();
+    if (user != null && new Date(user.tokenExpires) < dateTime) {
       dispatch(setLogout());
-      window.alert("You have been logged out because your session has expired")
+      window.alert("You have been logged out because your session has expired");
       return;
     } else {
       setLoading(true);
-      const { data: userData } = await axios.post<User>(
-        `${apiBaseUrl}/Auth/refresh-token`,
-        null,
-        {
-          headers: { Authorization: `bearer ${token}` },
-        }
-      );
+      const { data: userData } = await axios.post<User>(`${apiBaseUrl}/Auth/refresh-token`, null, {
+        headers: { Authorization: `bearer ${token}` },
+      });
       dispatch(setLogin({ user: userData, token: userData.token }));
       setLoading(false);
       const { data: entryListFromApi } = await axios.get<Entry[]>(`${apiBaseUrl}/BattleRoyale`, {

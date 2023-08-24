@@ -35,13 +35,12 @@ export default function SignIn() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    const authData = new FormData(event.currentTarget);
     try {
       const { data: userData } = await axios.post<User>(`${apiBaseUrl}/Auth/login`, {
-        username: data.get("username"),
-        password: data.get("password"),
+        username: authData.get("username"),
+        password: authData.get("password"),
       });
-      console.log(userData)
       dispatch(setLogin({ user: userData, token: userData.token }));
       const { data: entryListFromApi } = await axios.get<Entry[]>(`${apiBaseUrl}/BattleRoyale`, {
         headers: { Authorization: `bearer ${userData.token}` },
