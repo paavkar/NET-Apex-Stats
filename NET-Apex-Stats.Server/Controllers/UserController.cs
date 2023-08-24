@@ -32,9 +32,7 @@ namespace NET_Apex_Stats.Server.Controllers
         public async Task<ActionResult<object>> Get(string id)
         {
             string userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Sid);
-
             Console.WriteLine(userId);
-
             //if (userId == null)
             //{
             //    return Unauthorized("Missing or invalid access token");
@@ -42,8 +40,6 @@ namespace NET_Apex_Stats.Server.Controllers
 
             User? user = null;
             user = await _mongoDBService.GetUserFromIdAsync(id);
-
-            Console.WriteLine(user.Id);
 
             if (user == null)
             {

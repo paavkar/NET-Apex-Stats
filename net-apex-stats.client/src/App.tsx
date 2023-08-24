@@ -24,9 +24,10 @@ function App() {
   const [loading, setLoading] = useState(false);
 
   const checkToken = async () => {
-    const dateTime = new Date();
-    if (user != null && user.tokenExpires < dateTime) {
+      const dateTime = new Date();
+    if (user != null && new Date(user.user.tokenExpires) < dateTime) {
       dispatch(setLogout());
+      window.alert("You have been logged out because your session has expired")
       return;
     } else {
       setLoading(true);
@@ -47,7 +48,6 @@ function App() {
   };
 
   useEffect(() => {
-    console.log("in app: ",user)
     if (user != null && !loading) {
       checkToken();
     }

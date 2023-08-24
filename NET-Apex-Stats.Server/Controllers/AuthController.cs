@@ -95,7 +95,7 @@ namespace NET_Apex_Stats.Controllers
             }
             string refreshToken = Request.Cookies["refreshToken"];
             string userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Sid);
-
+            
             User? user = null;
             user = await _mongoDBService.GetUserFromIdAsync(userId);
 
