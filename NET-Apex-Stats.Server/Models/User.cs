@@ -13,7 +13,7 @@ namespace NET_Apex_Stats.Server.Models
         public string PasswordHash { get; set; }
         public String RefreshToken { get; set; } = String.Empty;
         public DateTime TokenCreated { get; set; }
-        public DateTime TokeExpires { get; set; }
+        public DateTime TokenExpires { get; set; }
 
         public User(string username, string passwordHash)
         {

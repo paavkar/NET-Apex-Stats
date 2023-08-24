@@ -19,7 +19,6 @@ import { apiBaseUrl } from "../../constants";
 import { TableBody } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, setEntries } from "../../state";
-import ResponsiveAppBar from "../Navbar";
 
 const StatListPage = () => {
   const dispatch = useDispatch();
@@ -92,9 +91,6 @@ const StatListPage = () => {
   return (
       <div className="App">
           <Box>
-              <Box>
-              <ResponsiveAppBar />
-              </Box>
               <Box>
                   <Typography align="center" variant="h6">
                       Entry list

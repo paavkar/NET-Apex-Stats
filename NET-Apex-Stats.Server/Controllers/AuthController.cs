@@ -87,7 +87,7 @@ namespace NET_Apex_Stats.Controllers
         }
 
         [HttpPost("refresh-token")]
-        public async Task<ActionResult<string>> RefreshToken()
+        public async Task<ActionResult<object>> RefreshToken()
         {
             if(_httpContextAccessor.HttpContext == null)
             {
@@ -103,7 +103,7 @@ namespace NET_Apex_Stats.Controllers
             {
                 return Unauthorized("Invalid Refresh Token");
             }
-            else if (user.TokeExpires < DateTime.Now)
+            else if (user.TokenExpires < DateTime.Now)
             {
                 return Unauthorized("Token expired");
             }
@@ -112,7 +112,7 @@ namespace NET_Apex_Stats.Controllers
             var newRefreshToken = GenerateRefreshToken();
             SetRefreshToken(newRefreshToken, user);
 
-            return Ok(token);
+            return Ok((new { token, user }));
         }
 
 
@@ -139,7 +139,7 @@ namespace NET_Apex_Stats.Controllers
 
             user.RefreshToken = newRefreshToken.Token;
             user.TokenCreated = newRefreshToken.Created;
-            user.TokeExpires = newRefreshToken.Expires;
+            user.TokenExpires = newRefreshToken.Expires;
 
             await _mongoDBService.UpdateUserAsync(user);
         }

@@ -28,8 +28,6 @@ namespace NET_Apex_Stats.Controllers
         public async Task<List<BattleRoyale>> Get()
         {
             string userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Sid);
-            string refreshToken = _httpContextAccessor.HttpContext.Request.Cookies["refreshToken"];
-            Console.WriteLine($"in get: {refreshToken}");
             return await _mongoDBService.GetAsync(userId);
         }
 
@@ -48,6 +46,7 @@ namespace NET_Apex_Stats.Controllers
             {
                 string userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Sid);
                 battleRoyale.userId = userId;
+                Console.WriteLine(userId);
                 await _mongoDBService.CreateAsync(battleRoyale);
                 return CreatedAtAction(nameof(Get), battleRoyale );
             }
