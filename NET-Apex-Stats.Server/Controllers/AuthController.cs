@@ -87,17 +87,23 @@ namespace NET_Apex_Stats.Controllers
         }
 
         [HttpPost("refresh-token")]
-        public async Task<ActionResult<object>> RefreshToken()
+        public ActionResult<object> RefreshToken([FromBody] User user)
         {
-            if(_httpContextAccessor.HttpContext == null)
+            //TimeSpan difference = DateTime.Now - user.TokenCreated;
+            //if (difference.Hours < 1)
+            //{
+            //    return BadRequest("Refreshing the token is limited to once per hour");
+            //}
+
+            if (_httpContextAccessor.HttpContext == null)
             {
                 return BadRequest();
             }
             string refreshToken = Request.Cookies["refreshToken"];
             string userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Sid);
-            
-            User? user = null;
-            user = await _mongoDBService.GetUserFromIdAsync(userId);
+
+            //User? user = null;
+            //user = await _mongoDBService.GetUserFromIdAsync(userId);
 
             if (!user.RefreshToken.Equals(refreshToken))
             {

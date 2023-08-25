@@ -50,8 +50,7 @@ function ResponsiveAppBar() {
         dispatch(setEntries({ entries: [] }));
         break;
       case "Profile":
-        if (user == null) return;
-        navigate(`/profile/${user.id}`);
+        navigate(`/profile/${user?.id}`);
         break;
       default:
         break;

@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Button } from "@mui/material";
 
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -12,6 +12,7 @@ import { User } from "../../types";
 import ResponsiveAppBar from "../Navbar";
 
 import { apiBaseUrl } from "../../constants";
+import FlexBetween from "../FlexBetween";
 
 const ProfilePage = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -33,17 +34,79 @@ const ProfilePage = () => {
 
   return (
     <div className="App">
-      <Box>
-        <ResponsiveAppBar />
-        <Box>
+      <ResponsiveAppBar />
+      <FlexBetween>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-around",
+            alignItems: "left",
+            flexDirection: "column",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              flexDirection: "column",
+            }}
+          >
+            <Typography variant="h6">Refresh token info</Typography>
+          </Box>
+
           <Typography>
-            Current refresh token created <strong>{new Date(user.tokenCreated).toString()}</strong>
+            Current refresh token: <strong>{user.refreshToken}</strong>
+          </Typography>
+          {/**  <Button onClick={() => checkToken()}>Renew your token</Button> */}
+
+          <Typography>
+            Current refresh token created at{" "}
+            <strong>{new Date(user.tokenCreated).toString()}</strong>
           </Typography>
           <Typography>
-            Current refresh token expires <strong>{new Date(user.tokenExpires).toString()}</strong> 
+            Current refresh token expires at{" "}
+            <strong>{new Date(user.tokenExpires).toString()}</strong>
           </Typography>
         </Box>
-      </Box>
+
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-around",
+            alignItems: "left",
+            flexDirection: "column",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              flexDirection: "column",
+            }}
+          >
+            <Typography variant="h6">Reset Password</Typography>
+          </Box>
+        </Box>
+
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-around",
+            alignItems: "left",
+            flexDirection: "column",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              flexDirection: "column",
+            }}
+          >
+            <Typography variant="h6">Lifetime Stats</Typography>
+          </Box>
+        </Box>
+      </FlexBetween>
     </div>
   );
 };

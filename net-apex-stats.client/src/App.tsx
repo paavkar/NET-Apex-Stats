@@ -4,6 +4,10 @@ import { useSelector } from "react-redux";
 
 import SignIn from "./components/SignInPage/SignIn";
 import SignUp from "./components/SignUpPage/SignUp";
+
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+
 import { RootState, setLogout, setLogin, setEntries } from "./state";
 import { User, Entry } from "./types";
 
@@ -22,35 +26,64 @@ function App() {
   const token = useSelector<RootState, string | null>((state) => state.token);
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [showError, setShowError] = useState(false);
 
   const checkToken = async () => {
     const dateTime = new Date();
     if (user != null && new Date(user.tokenExpires) < dateTime) {
       dispatch(setLogout());
-      window.alert("You have been logged out because your session has expired");
+      setErrorMessage("You have been logged out because your session has expired");
+      setShowError(true);
       return;
     } else {
-      setLoading(true);
-      const { data: userData } = await axios.post<User>(`${apiBaseUrl}/Auth/refresh-token`, null, {
-        headers: { Authorization: `bearer ${token}` },
-      });
-      dispatch(setLogin({ user: userData, token: userData.token }));
-      setLoading(false);
-      const { data: entryListFromApi } = await axios.get<Entry[]>(`${apiBaseUrl}/BattleRoyale`, {
-        headers: { Authorization: `bearer ${userData.token}` },
-      });
-      dispatch(setEntries({ entries: entryListFromApi }));
+      try {
+        const { data: userData } = await axios.post<User>(
+          `${apiBaseUrl}/Auth/refresh-token`,
+          user,
+          {
+            headers: { Authorization: `bearer ${token}` },
+          }
+        );
+        dispatch(setLogin({ user: userData, token: userData.token }));
+        const { data: entryListFromApi } = await axios.get<Entry[]>(`${apiBaseUrl}/BattleRoyale`, {
+          headers: { Authorization: `bearer ${userData.token}` },
+        });
+        dispatch(setEntries({ entries: entryListFromApi }));
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
   useEffect(() => {
     if (user != null && !loading) {
+      const difference = new Date().getTime() - new Date(user.tokenCreated).getTime()
+      if (difference == 0 || (difference/1000/60/60) < 1) {
+        return;
+      }
+      setLoading(true);
       checkToken();
+      setTimeout(() => {}, 5000);
     }
   }, []);
 
+  const handleClose = (_event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setShowError(false);
+  };
+
   return (
     <div className="app">
+      <Snackbar open={showError} autoHideDuration={5000} onClose={handleClose}>
+        <Alert variant="filled" onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+          {errorMessage}
+        </Alert>
+      </Snackbar>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={isAuth ? <Navigate to="home" /> : <SignIn />} />
