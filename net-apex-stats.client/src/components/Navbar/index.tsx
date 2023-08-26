@@ -8,6 +8,7 @@ import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
@@ -19,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 import { RootState, setLogout, setEntries } from "../../state";
 import { User } from "../../types";
 
+const pages = ["Home"];
 const settings = ["Profile", "Logout"];
 
 function ResponsiveAppBar() {
@@ -108,7 +110,13 @@ function ResponsiveAppBar() {
               sx={{
                 display: { xs: "block", md: "none" },
               }}
-            ></Menu>
+            >
+              {pages.map((page) => (
+                <MenuItem key={page} onClick={() => navigate(`/${page}`)}>
+                  <Typography textAlign="center">{page}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
           </Box>
           <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
           <Typography
@@ -130,6 +138,19 @@ function ResponsiveAppBar() {
             Apex Stats
           </Typography>
 
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+            {pages.map((page) => (
+              <Button
+                key={page}
+                onClick={() => navigate(`/${page}`)}
+                sx={{ my: 2, color: "white", display: "block" }}
+              >
+                {page}
+              </Button>
+            ))}
+          </Box>
+
+          <Typography sx={{ marginRight: "1rem" }}>{user?.username}</Typography>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>

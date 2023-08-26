@@ -10,6 +10,7 @@ import {
   TableRow,
   Snackbar,
   Alert,
+  Paper,
 } from "@mui/material";
 
 import { EntryFormValues } from "../AddEntryModal/AddEntryForm";
@@ -90,60 +91,64 @@ const StatListPage = () => {
   return (
     <div className="App">
       <Box>
-        <Box>
-          <Typography align="center" variant="h6">
+        <Paper sx={{ margin: "1rem" }} elevation={6}>
+          <Typography sx={{ paddingTop: "1rem" }} align="center" variant="h6">
             Entry list
           </Typography>
-        </Box>
-        <Table style={{ marginBottom: "1em" }}>
-          <TableHead>
-            <TableRow>
-              <TableCell>Season</TableCell>
-              <TableCell>Games Played</TableCell>
-              <TableCell>Wins</TableCell>
-              <TableCell>Kills</TableCell>
-              <TableCell>KD/R</TableCell>
-              <TableCell>Average Damage</TableCell>
-              <TableCell></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {Object.values(entries).map((entry: Entry) => (
-              <TableRow key={entry.id}>
-                <TableCell>{entry.season}</TableCell>
-                <TableCell>{entry.games}</TableCell>
-                <TableCell>{entry.wins}</TableCell>
-                <TableCell>{entry.kills}</TableCell>
-                <TableCell>{entry.kdr}</TableCell>
-                <TableCell>{entry.avgDamage}</TableCell>
-                <TableCell align="center">
-                  <Button variant="contained" color="error" onClick={() => handleDelete(entry.id)}>
-                    Delete
-                  </Button>
-                </TableCell>
+          <Table sx={{ maxWidth: "110rem", margin: "1em" }}>
+            <TableHead>
+              <TableRow>
+                <TableCell>Season</TableCell>
+                <TableCell>Games Played</TableCell>
+                <TableCell>Wins</TableCell>
+                <TableCell>Kills</TableCell>
+                <TableCell>KD/R</TableCell>
+                <TableCell>Average Damage</TableCell>
+                <TableCell></TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        <AddEntryModal
-          modalOpen={modalOpen}
-          onSubmit={submitNewEntry}
-          error={error}
-          onClose={closeModal}
-        />
-        <Button variant="contained" onClick={() => openModal()}>
-          Add New Entry
-        </Button>
-        <Snackbar open={deletionSuccess} autoHideDuration={5000} onClose={handleClose}>
-          <Alert variant="filled" onClose={handleClose} severity="success" sx={{ width: "100%" }}>
-            Entry deleted successfully!
-          </Alert>
-        </Snackbar>
-        <Snackbar open={deletionError} autoHideDuration={5000} onClose={handleClose}>
-          <Alert variant="filled" onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-            {error}
-          </Alert>
-        </Snackbar>
+            </TableHead>
+            <TableBody>
+              {Object.values(entries).map((entry: Entry) => (
+                <TableRow key={entry.id}>
+                  <TableCell>{entry.season}</TableCell>
+                  <TableCell>{entry.games}</TableCell>
+                  <TableCell>{entry.wins}</TableCell>
+                  <TableCell>{entry.kills}</TableCell>
+                  <TableCell>{entry.kdr}</TableCell>
+                  <TableCell>{entry.avgDamage}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      color="error"
+                      onClick={() => handleDelete(entry.id)}
+                    >
+                      Delete
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          <AddEntryModal
+            modalOpen={modalOpen}
+            onSubmit={submitNewEntry}
+            error={error}
+            onClose={closeModal}
+          />
+          <Button sx={{ margin: "1rem" }} variant="contained" onClick={() => openModal()}>
+            Add New Entry
+          </Button>
+          <Snackbar open={deletionSuccess} autoHideDuration={5000} onClose={handleClose}>
+            <Alert variant="filled" onClose={handleClose} severity="success" sx={{ width: "100%" }}>
+              Entry deleted successfully!
+            </Alert>
+          </Snackbar>
+          <Snackbar open={deletionError} autoHideDuration={5000} onClose={handleClose}>
+            <Alert variant="filled" onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+              {error}
+            </Alert>
+          </Snackbar>
+        </Paper>
       </Box>
     </div>
   );

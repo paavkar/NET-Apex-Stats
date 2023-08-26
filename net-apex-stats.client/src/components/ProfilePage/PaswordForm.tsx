@@ -1,5 +1,6 @@
 import { Grid, Typography, TextField, Button, Snackbar, Alert } from "@mui/material";
 import { Formik, Form } from "formik";
+import * as Yup from "yup";
 
 import axios from "axios";
 
@@ -23,7 +24,7 @@ const PasswordForm = ({ user, token }: Props) => {
   const [displayFormSuccess, setDisplayFormSuccess] = useState(false);
   const [displayFormFailure, setDisplayFormFailure] = useState(false);
   const [formStatus, setFormStatus] = useState("");
-  
+
   const updatePassword = async (values: INewPasswordForm, resetForm: Function) => {
     try {
       const { data } = await axios.put(`${apiBaseUrl}/User/${user.id}`, values, {
@@ -70,13 +71,20 @@ const PasswordForm = ({ user, token }: Props) => {
             actions.setSubmitting(false);
           }, 500);
         }}
+        validationSchema={Yup.object().shape({
+          currentPassword: Yup.string().required("Write your current password"),
+          newPassword: Yup.string().required("Write a new password"),
+          confirmPassword: Yup.string()
+            .required("Password confirmation is required")
+            .oneOf([Yup.ref("newPassword"), ""], "Passwords do not match"),
+        })}
       >
         {({ values, handleChange, handleBlur, touched, errors, isSubmitting }) => {
           return (
             <Form className="form ui">
               <div style={{ marginBottom: "1em", marginTop: "1rem" }}>
                 <TextField
-                  fullWidth
+                  sx={{ marginLeft: "1rem", width: "25rem" }}
                   label={"Current Password"}
                   placeholder={"Current Password"}
                   name="currentPassword"
@@ -84,12 +92,14 @@ const PasswordForm = ({ user, token }: Props) => {
                   value={values.currentPassword}
                   onChange={handleChange}
                   onBlur={handleBlur}
+                  error={Boolean(touched.currentPassword) && Boolean(errors.currentPassword)}
+                  helperText={touched.currentPassword && errors.currentPassword}
                 />
               </div>
 
               <div style={{ marginBottom: "1em" }}>
                 <TextField
-                  fullWidth
+                  sx={{ marginLeft: "1rem", width: "25rem" }}
                   label={"New Password"}
                   placeholder={"New Password"}
                   name="newPassword"
@@ -97,12 +107,14 @@ const PasswordForm = ({ user, token }: Props) => {
                   value={values.newPassword}
                   onChange={handleChange}
                   onBlur={handleBlur}
+                  error={Boolean(touched.newPassword) && Boolean(errors.newPassword)}
+                  helperText={touched.newPassword && errors.newPassword}
                 />
               </div>
 
               <div style={{ marginBottom: "1em" }}>
                 <TextField
-                  fullWidth
+                  sx={{ marginLeft: "1rem", width: "25rem"}}
                   label={"Confirm Password"}
                   placeholder={"Confirm Password"}
                   name="confirmPassword"
@@ -110,6 +122,8 @@ const PasswordForm = ({ user, token }: Props) => {
                   value={values.confirmPassword}
                   onChange={handleChange}
                   onBlur={handleBlur}
+                  error={Boolean(touched.confirmPassword) && Boolean(errors.confirmPassword)}
+                  helperText={touched.confirmPassword && errors.confirmPassword}
                 />
               </div>
 
@@ -118,6 +132,7 @@ const PasswordForm = ({ user, token }: Props) => {
                   <Button
                     style={{
                       float: "right",
+                      marginRight: "1rem",
                     }}
                     type="submit"
                     variant="contained"

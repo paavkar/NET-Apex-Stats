@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Paper } from "@mui/material";
 
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -36,6 +36,9 @@ const ProfilePage = () => {
   return (
     <div className="App">
       <ResponsiveAppBar />
+      <Typography sx={{ margin: "1rem" }} variant="h5">
+        Welcome to your profile, <strong>{user.username}</strong>!
+      </Typography>
       <FlexBetween>
         <Box
           sx={{
@@ -45,28 +48,28 @@ const ProfilePage = () => {
             flexDirection: "column",
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "left",
-              flexDirection: "column",
-            }}
+          <Paper
+            elevation={6}
+            sx={{ textAlign: "left", height: "10rem", width: "60rem", lineHeight: "60px" }}
           >
-            <Typography variant="h6">Refresh token info</Typography>
-          </Box>
+            <Typography sx={{ marginLeft: "1rem" }} variant="h6">
+              Refresh token info
+            </Typography>
 
-          <Typography>
-            Current refresh token: <strong>{user.refreshToken}</strong>
-          </Typography>
+            <Typography sx={{ marginLeft: "1rem" }}>
+              Current refresh token: <strong>{user.refreshToken}</strong>
+            </Typography>
 
-          <Typography>
-            Current refresh token created at{" "}
-            <strong>{new Date(user.tokenCreated).toString()}</strong>
-          </Typography>
-          <Typography>
-            Current refresh token expires at{" "}
-            <strong>{new Date(user.tokenExpires).toString()}</strong>
-          </Typography>
+            <Typography sx={{ marginLeft: "1rem" }}>
+              Current refresh token created at{" "}
+              <strong>{new Date(user.tokenCreated).toString()}</strong>
+            </Typography>
+
+            <Typography sx={{ marginLeft: "1rem" }}>
+              Current refresh token expires at{" "}
+              <strong>{new Date(user.tokenExpires).toString()}</strong>
+            </Typography>
+          </Paper>
         </Box>
       </FlexBetween>
 
@@ -79,19 +82,15 @@ const ProfilePage = () => {
             flexDirection: "column",
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "left",
-              flexDirection: "column",
-              marginTop: "3rem"
-            }}
+          <Paper
+            elevation={6}
+            sx={{ textAlign: "left", height: "22rem", width: "30rem", lineHeight: "60px" }}
           >
-            <Typography variant="h6">Reset Password</Typography>
-            <Box>
-              <PasswordForm user={user} token={token} />
-            </Box>
-          </Box>
+            <Typography sx={{ marginLeft: "1rem" }} variant="h6">
+              Reset Password
+            </Typography>
+            <PasswordForm user={user} token={token} />
+          </Paper>
         </Box>
 
         <Box
@@ -102,15 +101,14 @@ const ProfilePage = () => {
             flexDirection: "column",
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              flexDirection: "column",
-            }}
+          <Paper
+            elevation={6}
+            sx={{ textAlign: "left", height: "20rem", width: "30rem", lineHeight: "60px" }}
           >
-            <Typography variant="h6">Lifetime Stats</Typography>
-          </Box>
+            <Typography sx={{ marginLeft: "1rem" }} variant="h6">
+              Lifetime Stats
+            </Typography>
+          </Paper>
         </Box>
       </FlexBetween>
     </div>
