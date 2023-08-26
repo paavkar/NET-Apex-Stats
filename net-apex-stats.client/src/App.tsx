@@ -60,7 +60,7 @@ function App() {
   useEffect(() => {
     if (user != null && !loading) {
       const difference = new Date().getTime() - new Date(user.tokenCreated).getTime()
-      if (difference == 0 || (difference/1000/60/60) < 1) {
+      if (difference == 0 || (difference/1000/60) < 50) {
         return;
       }
       setLoading(true);

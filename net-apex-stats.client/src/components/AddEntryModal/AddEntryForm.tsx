@@ -1,14 +1,9 @@
-import { Grid, Button } from "@mui/material";
-import { Field, Formik, Form } from "formik";
+import { Grid, Button, TextField, Typography } from "@mui/material";
+import { Formik, Form, ErrorMessage } from "formik";
 
-import { TextField } from "./FormField";
 import { Entry } from "../../types";
 
-/*
- * use type Entry, but omit id and entries,
- * because those are irrelevant for new patient object.
- */
-export type EntryFormValues = Omit<Entry, "id" | "entries">;
+export type EntryFormValues = Omit<Entry, "id">;
 
 interface Props {
   onSubmit: (values: EntryFormValues) => void;
@@ -24,7 +19,7 @@ export const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
         wins: 0,
         kills: 0,
         kdr: 0,
-        avgDamage: 0
+        avgDamage: 0,
       }}
       onSubmit={onSubmit}
       validate={(values) => {
@@ -51,45 +46,99 @@ export const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
         return errors;
       }}
     >
-      {({ isValid, dirty }) => {
+      {({ isValid, dirty, values, handleChange }) => {
         return (
           <Form className="form ui">
-            <Field
-              label="Season"
-              placeholder="Season"
-              name="season"
-              component={TextField}
-            />
-            <Field
-              label="Games Played"
-              placeholder="games"
-              name="games"
-              component={TextField}
-            />
-            <Field
-              label="Total wins in the season"
-              placeholder="wins"
-              name="wins"
-              component={TextField}
-            />
-            <Field
-              label="Total Kills in the season"
-              placeholder="kills"
-              name="kills"
-              component={TextField}
-            />
-            <Field
-              label="Kill/Death ratio in the season"
-              placeholder="kdr"
-              name="kdr"
-              component={TextField}
-            />
-            <Field
-              label="Average damage in the season"
-              placeholder="damage"
-              name="avgDamage"
-              component={TextField}
-            />
+            <div style={{ marginBottom: "1em" }}>
+              <TextField
+                fullWidth
+                label={"Season"}
+                placeholder={"Season"}
+                name="season"
+                type="text"
+                value={values.season}
+                onChange={handleChange}
+              />
+              <Typography variant="subtitle2" style={{ color: "red" }}>
+                <ErrorMessage name={"season"} />
+              </Typography>
+            </div>
+
+            <div style={{ marginBottom: "1em" }}>
+              <TextField
+                fullWidth
+                label={"Games Played"}
+                placeholder={"Games Played"}
+                name="games"
+                type="number"
+                value={values.games}
+                onChange={handleChange}
+              />
+              <Typography variant="subtitle2" style={{ color: "red" }}>
+                <ErrorMessage name={"games"} />
+              </Typography>
+            </div>
+
+            <div style={{ marginBottom: "1em" }}>
+              <TextField
+                fullWidth
+                label={"Wins"}
+                placeholder={"Wins"}
+                name="wins"
+                type="number"
+                value={values.wins}
+                onChange={handleChange}
+              />
+              <Typography variant="subtitle2" style={{ color: "red" }}>
+                <ErrorMessage name={"wins"} />
+              </Typography>
+            </div>
+
+            <div style={{ marginBottom: "1em" }}>
+              <TextField
+                fullWidth
+                label={"Kills"}
+                placeholder={"Kills"}
+                name="kills"
+                type="number"
+                value={values.kills}
+                onChange={handleChange}
+              />
+              <Typography variant="subtitle2" style={{ color: "red" }}>
+                <ErrorMessage name={"kills"} />
+              </Typography>
+            </div>
+
+            <div style={{ marginBottom: "1em" }}>
+              <TextField
+                fullWidth
+                label={"Kill/Death ratio"}
+                placeholder={"Kill/Death ratio"}
+                name="kdr"
+                type="number"
+                value={values.kdr}
+                onChange={handleChange}
+              />
+              <Typography variant="subtitle2" style={{ color: "red" }}>
+                <ErrorMessage name={"kdr"} />
+              </Typography>
+            </div>
+
+            <div style={{ marginBottom: "1em" }}>
+              <TextField
+                fullWidth
+                label={"Average Damage in the season"}
+                placeholder={"Average Damage in the season"}
+                name="avgDamage"
+                type="number"
+                value={values.avgDamage}
+                onChange={handleChange}
+              />
+              <Typography variant="subtitle2" style={{ color: "red" }}>
+                <ErrorMessage name={"avgDamage"} />
+              </Typography>
+            </div>
+
             <Grid>
               <Grid item>
                 <Button

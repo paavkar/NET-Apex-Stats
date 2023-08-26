@@ -1,4 +1,4 @@
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -13,6 +13,7 @@ import ResponsiveAppBar from "../Navbar";
 
 import { apiBaseUrl } from "../../constants";
 import FlexBetween from "../FlexBetween";
+import PasswordForm from "./PaswordForm";
 
 const ProfilePage = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -47,7 +48,7 @@ const ProfilePage = () => {
           <Box
             sx={{
               display: "flex",
-              alignItems: "center",
+              alignItems: "left",
               flexDirection: "column",
             }}
           >
@@ -57,7 +58,6 @@ const ProfilePage = () => {
           <Typography>
             Current refresh token: <strong>{user.refreshToken}</strong>
           </Typography>
-          {/**  <Button onClick={() => checkToken()}>Renew your token</Button> */}
 
           <Typography>
             Current refresh token created at{" "}
@@ -68,7 +68,9 @@ const ProfilePage = () => {
             <strong>{new Date(user.tokenExpires).toString()}</strong>
           </Typography>
         </Box>
+      </FlexBetween>
 
+      <FlexBetween>
         <Box
           sx={{
             display: "flex",
@@ -80,11 +82,15 @@ const ProfilePage = () => {
           <Box
             sx={{
               display: "flex",
-              alignItems: "center",
+              alignItems: "left",
               flexDirection: "column",
+              marginTop: "3rem"
             }}
           >
             <Typography variant="h6">Reset Password</Typography>
+            <Box>
+              <PasswordForm user={user} token={token} />
+            </Box>
           </Box>
         </Box>
 

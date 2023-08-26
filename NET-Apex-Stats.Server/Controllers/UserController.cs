@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Amazon.Runtime.Internal;
+using Microsoft.AspNetCore.Mvc;
 using NET_Apex_Stats.Server.Models;
 using NET_Apex_Stats.Services;
 using System.Security.Claims;
@@ -50,8 +51,39 @@ namespace NET_Apex_Stats.Server.Controllers
 
         // PUT api/<UserController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<ActionResult<object>> Put(string id, UpdatePassword request)
         {
+            string currentPassword = request.CurrentPassword;
+            string newPassword = request.NewPassword;
+
+            string userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Sid);
+
+            User? user = null;
+            user = await _mongoDBService.GetUserFromIdAsync(id);
+
+            if(user != null)
+            {
+                if (user.Id != userId)
+                {
+                    return Unauthorized("Current user not allowed to change this user's password");
+                }
+
+                if (!BCrypt.Net.BCrypt.Verify(currentPassword, user.PasswordHash))
+                {
+                    return Unauthorized("Incorrect current password");
+                }
+
+                int saltRounds = 10;
+
+                string passwordHash = BCrypt.Net.BCrypt.HashPassword(newPassword, saltRounds);
+
+                user.PasswordHash = passwordHash;
+
+                await _mongoDBService.UpdateUserAsync(user);
+
+                return Ok(user);
+            }
+            return Unauthorized("no user found");
         }
 
         // DELETE api/<UserController>/5
