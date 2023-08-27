@@ -1,4 +1,4 @@
-import { Grid, Typography, TextField, Button, Snackbar, Alert } from "@mui/material";
+import { Grid, TextField, Button, Snackbar, Alert } from "@mui/material";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 
@@ -25,6 +25,7 @@ const PasswordForm = ({ user, token }: Props) => {
   const [displayFormFailure, setDisplayFormFailure] = useState(false);
   const [formStatus, setFormStatus] = useState("");
 
+  // eslint-disable-next-line @typescript-eslint/ban-types
   const updatePassword = async (values: INewPasswordForm, resetForm: Function) => {
     try {
       const { data } = await axios.put(`${apiBaseUrl}/User/${user.id}`, values, {
@@ -73,7 +74,12 @@ const PasswordForm = ({ user, token }: Props) => {
         }}
         validationSchema={Yup.object().shape({
           currentPassword: Yup.string().required("Write your current password"),
-          newPassword: Yup.string().required("Write a new password"),
+          newPassword: Yup.string()
+            .required("Write a new password")
+            .notOneOf(
+              [Yup.ref("currentPassword"), ""],
+              "New password must be different than the current one"
+            ),
           confirmPassword: Yup.string()
             .required("Password confirmation is required")
             .oneOf([Yup.ref("newPassword"), ""], "Passwords do not match"),
@@ -114,7 +120,7 @@ const PasswordForm = ({ user, token }: Props) => {
 
               <div style={{ marginBottom: "1em" }}>
                 <TextField
-                  sx={{ marginLeft: "1rem", width: "25rem"}}
+                  sx={{ marginLeft: "1rem", width: "25rem" }}
                   label={"Confirm Password"}
                   placeholder={"Confirm Password"}
                   name="confirmPassword"

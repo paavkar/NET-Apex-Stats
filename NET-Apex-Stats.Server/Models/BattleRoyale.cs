@@ -17,9 +17,11 @@ namespace NET_Apex_Stats.Server.Models
 
         public int kills { get; set; }
 
-        public double kdr { get; set; }
+        public int deaths { get; set; }
 
-        public double avgDamage { get; set; }
+        public int damage { get; set; }
+
+        public int highestDamage { get; set; }
 
         [BsonRepresentation(BsonType.ObjectId)]
         public string? userId { get; set; }

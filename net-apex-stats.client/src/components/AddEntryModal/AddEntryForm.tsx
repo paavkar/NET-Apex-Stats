@@ -18,8 +18,9 @@ export const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
         games: 0,
         wins: 0,
         kills: 0,
-        kdr: 0,
-        avgDamage: 0,
+        deaths: 0,
+        damage: 0,
+        highestDamage: 0
       }}
       onSubmit={onSubmit}
       validate={(values) => {
@@ -37,11 +38,15 @@ export const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
         if (!values.kills) {
           errors.kills = requiredError;
         }
-        if (!values.kdr) {
-          errors.kdr = requiredError;
+        if (!values.deaths) {
+          errors.deaths = requiredError;
         }
-        if (!values.avgDamage) {
-          errors.avgDamage = requiredError;
+        if (!values.damage) {
+          errors.damage = requiredError;
+        }
+        return errors;
+        if (!values.highestDamage) {
+          errors.highestDamage = requiredError;
         }
         return errors;
       }}
@@ -112,30 +117,45 @@ export const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
             <div style={{ marginBottom: "1em" }}>
               <TextField
                 fullWidth
-                label={"Kill/Death ratio"}
-                placeholder={"Kill/Death ratio"}
-                name="kdr"
+                label={"Total deaths in season"}
+                placeholder={"Total deaths in season"}
+                name="deaths"
                 type="number"
-                value={values.kdr}
+                value={values.deaths}
                 onChange={handleChange}
               />
               <Typography variant="subtitle2" style={{ color: "red" }}>
-                <ErrorMessage name={"kdr"} />
+                <ErrorMessage name={"deaths"} />
               </Typography>
             </div>
 
             <div style={{ marginBottom: "1em" }}>
               <TextField
                 fullWidth
-                label={"Average Damage in the season"}
-                placeholder={"Average Damage in the season"}
-                name="avgDamage"
+                label={"Total Damage in the season"}
+                placeholder={"Total Damage in the season"}
+                name="damage"
                 type="number"
-                value={values.avgDamage}
+                value={values.damage}
                 onChange={handleChange}
               />
               <Typography variant="subtitle2" style={{ color: "red" }}>
-                <ErrorMessage name={"avgDamage"} />
+                <ErrorMessage name={"damage"} />
+              </Typography>
+            </div>
+
+            <div style={{ marginBottom: "1em" }}>
+              <TextField
+                fullWidth
+                label={"Highest Damage in a game in the season"}
+                placeholder={"Highest Damage in a game in the season"}
+                name="highestDamage"
+                type="number"
+                value={values.highestDamage}
+                onChange={handleChange}
+              />
+              <Typography variant="subtitle2" style={{ color: "red" }}>
+                <ErrorMessage name={"highestDamage"} />
               </Typography>
             </div>
 

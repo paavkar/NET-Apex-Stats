@@ -68,7 +68,7 @@ const StatListPage = () => {
       } catch (e: unknown) {
         if (axios.isAxiosError(e)) {
           console.error(e?.response?.data || "Unrecognized axios error");
-          setError(String(e?.response?.data?.error) || "Unrecognized axios error");
+          setError(String(e?.response?.data) || "Unrecognized axios error");
           setDeletionError(true);
         } else {
           console.error("Unknown error", e);
@@ -98,12 +98,13 @@ const StatListPage = () => {
           <Table sx={{ maxWidth: "110rem", margin: "1em" }}>
             <TableHead>
               <TableRow>
-                <TableCell>Season</TableCell>
-                <TableCell>Games Played</TableCell>
-                <TableCell>Wins</TableCell>
-                <TableCell>Kills</TableCell>
-                <TableCell>KD/R</TableCell>
-                <TableCell>Average Damage</TableCell>
+                <TableCell><strong>Season</strong></TableCell>
+                <TableCell><strong>Games Played</strong></TableCell>
+                <TableCell><strong>Wins</strong></TableCell>
+                <TableCell><strong>Kills</strong></TableCell>
+                <TableCell><strong>Deaths</strong></TableCell>
+                <TableCell><strong>Total Damage</strong></TableCell>
+                <TableCell><strong>Highest Damage</strong></TableCell>
                 <TableCell></TableCell>
               </TableRow>
             </TableHead>
@@ -114,8 +115,9 @@ const StatListPage = () => {
                   <TableCell>{entry.games}</TableCell>
                   <TableCell>{entry.wins}</TableCell>
                   <TableCell>{entry.kills}</TableCell>
-                  <TableCell>{entry.kdr}</TableCell>
-                  <TableCell>{entry.avgDamage}</TableCell>
+                  <TableCell>{entry.deaths}</TableCell>
+                  <TableCell>{entry.damage}</TableCell>
+                  <TableCell>{entry.highestDamage}</TableCell>
                   <TableCell>
                     <Button
                       variant="contained"

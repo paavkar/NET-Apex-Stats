@@ -65,7 +65,7 @@ namespace NET_Apex_Stats.Server.Controllers
             {
                 if (user.Id != userId)
                 {
-                    return Unauthorized("Current user not allowed to change this user's password");
+                    return Forbid("Current user not allowed to change this user's password");
                 }
 
                 if (!BCrypt.Net.BCrypt.Verify(currentPassword, user.PasswordHash))
@@ -76,6 +76,11 @@ namespace NET_Apex_Stats.Server.Controllers
                 int saltRounds = 10;
 
                 string passwordHash = BCrypt.Net.BCrypt.HashPassword(newPassword, saltRounds);
+
+                if(user.PasswordHash == passwordHash)
+                {
+                    return BadRequest("New password cannot be the same as old one");
+                }
 
                 user.PasswordHash = passwordHash;
 

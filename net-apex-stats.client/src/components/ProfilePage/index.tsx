@@ -7,7 +7,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 
 import { RootState } from "../../state";
-import { User } from "../../types";
+import { User, Entry } from "../../types";
 
 import ResponsiveAppBar from "../Navbar";
 
@@ -19,6 +19,7 @@ const ProfilePage = () => {
   const [user, setUser] = useState<User | null>(null);
   const { id } = useParams();
   const token = useSelector<RootState, string | null>((state) => state.token);
+  const entries = useSelector<RootState, Entry[]>((state) => state.entries);
 
   const getUser = async () => {
     const { data } = await axios.get<User>(`${apiBaseUrl}/User/profile/${id}`, {
@@ -36,9 +37,11 @@ const ProfilePage = () => {
   return (
     <div className="App">
       <ResponsiveAppBar />
-      <Typography sx={{ margin: "1rem" }} variant="h5">
-        Welcome to your profile, <strong>{user.username}</strong>!
-      </Typography>
+      <FlexBetween sx={{ display: "flex", alignItems: "center" }}>
+        <Typography sx={{ margin: "1rem" }} variant="h5">
+          Welcome to your profile, <strong>{user.username}</strong>!
+        </Typography>
+      </FlexBetween>
       <FlexBetween>
         <Box
           sx={{
@@ -107,6 +110,92 @@ const ProfilePage = () => {
           >
             <Typography sx={{ marginLeft: "1rem" }} variant="h6">
               Lifetime Stats
+            </Typography>
+
+            <Typography sx={{ marginLeft: "1rem" }}>
+              Total games played:{" "}
+              <strong>
+                {entries
+                  .map((entry) => entry.games)
+                  .reduce((accumulator, currentValue) => accumulator + currentValue, 0)}
+              </strong>
+            </Typography>
+
+            <Typography sx={{ marginLeft: "1rem" }}>
+              Total wins:{" "}
+              <strong>
+                {entries
+                  .map((entry) => entry.wins)
+                  .reduce((accumulator, currentValue) => accumulator + currentValue, 0)}
+              </strong>
+            </Typography>
+
+            <Typography sx={{ marginLeft: "1rem" }}>
+              Win percentage:{" "}
+              <strong>
+                {(
+                  (entries
+                    .map((entry) => entry.wins)
+                    .reduce((accumulator, currentValue) => accumulator + currentValue, 0) /
+                    entries
+                      .map((entry) => entry.games)
+                      .reduce((accumulator, currentValue) => accumulator + currentValue, 0)) *
+                  100
+                ).toFixed(2)}
+                %
+              </strong>
+            </Typography>
+
+            <Typography sx={{ marginLeft: "1rem" }}>
+              Total kills:{" "}
+              <strong>
+                {entries
+                  .map((entry) => entry.kills)
+                  .reduce((accumulator, currentValue) => accumulator + currentValue, 0)}
+              </strong>
+            </Typography>
+
+            <Typography sx={{ marginLeft: "1rem" }}>
+              Total K/DR:{" "}
+              <strong>
+                {(
+                  entries
+                    .map((entry) => entry.kills)
+                    .reduce((accumulator, currentValue) => accumulator + currentValue, 0) /
+                  entries
+                    .map((entry) => entry.deaths)
+                    .reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+                ).toFixed(2)}
+              </strong>
+            </Typography>
+
+            <Typography sx={{ marginLeft: "1rem" }}>
+              Total damage:{" "}
+              <strong>
+                {entries
+                  .map((entry) => entry.damage)
+                  .reduce((accumulator, currentValue) => accumulator + currentValue, 0)}
+              </strong>
+            </Typography>
+
+            <Typography sx={{ marginLeft: "1rem" }}>
+              Average Damage:{" "}
+              <strong>
+                {(
+                  entries
+                    .map((entry) => entry.damage)
+                    .reduce((accumulator, currentValue) => accumulator + currentValue, 0) /
+                  entries
+                    .map((entry) => entry.games)
+                    .reduce((accumulator, currentValue) => accumulator + currentValue, 0) /
+                  entries.length
+                ).toFixed(2)}
+              </strong>
+            </Typography>
+
+            <Typography sx={{ marginLeft: "1rem" }}>
+              Highest damage in a game:{" "}
+              <strong>{Math.max(...entries.map((entry) => entry.highestDamage))}</strong>
             </Typography>
           </Paper>
         </Box>

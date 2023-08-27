@@ -22,7 +22,8 @@ const theme = createTheme();
 
 export default function SignUp() {
   const [success, setOpen] = React.useState(false);
-  const [error, setError] = React.useState(false);
+  const [displayError, setDisplayError] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState("");
   const textInput = React.useRef("");
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -35,8 +36,15 @@ export default function SignUp() {
       });
       setOpen(true);
     } catch (e) {
-      console.error(e);
-      setError(true);
+      if (axios.isAxiosError(e)) {
+        console.error(e?.response?.data || "Unrecognized axios error");
+        setErrorMessage(String(e?.response?.data) || "Unrecognized axios error");
+        setDisplayError(true);
+      } else {
+        console.error("Unknown error", e);
+        setErrorMessage("Unknown error");
+        setDisplayError(true);
+      }
     }
   };
 
@@ -46,7 +54,7 @@ export default function SignUp() {
     }
 
     setOpen(false);
-    setError(false);
+    setDisplayError(false);
   };
 
   return (
@@ -110,9 +118,9 @@ export default function SignUp() {
             Account registered successfully!
           </Alert>
         </Snackbar>
-        <Snackbar open={error} autoHideDuration={5000} onClose={handleClose}>
+        <Snackbar open={displayError} autoHideDuration={5000} onClose={handleClose}>
           <Alert variant="filled" onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-            Error in account registering. Try using a different username or password.
+            {errorMessage}
           </Alert>
         </Snackbar>
       </Container>

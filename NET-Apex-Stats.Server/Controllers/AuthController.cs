@@ -74,7 +74,7 @@ namespace NET_Apex_Stats.Controllers
             {
                 if (user.Username != request.Username || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
                 {
-                    return Unauthorized("invalid username or password");
+                    return Unauthorized("Invalid username or password");
                 }
                 string token = CreateToken(user);
 
@@ -83,7 +83,7 @@ namespace NET_Apex_Stats.Controllers
 
                 return Ok(new { token, user });
             }
-            return Unauthorized("invalid username or password");
+            return Unauthorized("Invalid username or password");
         }
 
         [HttpPost("refresh-token")]

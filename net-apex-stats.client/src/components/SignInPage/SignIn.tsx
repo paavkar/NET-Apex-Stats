@@ -3,8 +3,6 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -31,7 +29,8 @@ const theme = createTheme();
 export default function SignIn() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [error, setError] = React.useState(false);
+  const [displayError, setDisplayError] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState("");
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -48,8 +47,15 @@ export default function SignIn() {
       dispatch(setEntries({ entries: entryListFromApi }));
       navigate("/");
     } catch (e) {
-      console.error(e);
-      setError(true);
+      if (axios.isAxiosError(e)) {
+        console.error(e?.response?.data || "Unrecognized axios error");
+        setErrorMessage(String(e?.response?.data) || "Unrecognized axios error");
+        setDisplayError(true);
+      } else {
+        console.error("Unknown error", e);
+        setErrorMessage("Unknown error");
+        setDisplayError(true);
+      }
     }
   };
 
@@ -58,7 +64,7 @@ export default function SignIn() {
       return;
     }
 
-    setError(false);
+    setDisplayError(false);
   };
 
   return (
@@ -110,9 +116,9 @@ export default function SignIn() {
             </Grid>
           </Box>
         </Box>
-        <Snackbar open={error} autoHideDuration={5000} onClose={handleClose}>
+        <Snackbar open={displayError} autoHideDuration={5000} onClose={handleClose}>
           <Alert variant="filled" onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-            Error in logging in. Check your username and password that they are written correctly.
+            {errorMessage}
           </Alert>
         </Snackbar>
       </Container>

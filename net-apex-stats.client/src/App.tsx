@@ -27,14 +27,14 @@ function App() {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [showError, setShowError] = useState(false);
+  const [displayError, setDisplayError] = useState(false);
 
   const checkToken = async () => {
     const dateTime = new Date();
     if (user != null && new Date(user.tokenExpires) < dateTime) {
       dispatch(setLogout());
       setErrorMessage("You have been logged out because your session has expired");
-      setShowError(true);
+      setDisplayError(true);
       return;
     } else {
       try {
@@ -51,8 +51,16 @@ function App() {
         });
         dispatch(setEntries({ entries: entryListFromApi }));
         setLoading(false);
-      } catch (error) {
-        console.log(error);
+      } catch (e) {
+        if (axios.isAxiosError(e)) {
+          console.error(e?.response?.data || "Unrecognized axios error");
+          setErrorMessage(String(e?.response?.data) || "Unrecognized axios error");
+          setDisplayError(true);
+        } else {
+          console.error("Unknown error", e);
+          setErrorMessage("Unknown error");
+          setDisplayError(true);
+        }
       }
     }
   };
@@ -74,24 +82,24 @@ function App() {
       return;
     }
 
-    setShowError(false);
+    setDisplayError(false);
   };
 
   return (
     <div className="app">
-      <Snackbar open={showError} autoHideDuration={5000} onClose={handleClose}>
+      <Snackbar open={displayError} autoHideDuration={5000} onClose={handleClose}>
         <Alert variant="filled" onClose={handleClose} severity="error" sx={{ width: "100%" }}>
           {errorMessage}
         </Alert>
       </Snackbar>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={isAuth ? <Navigate to="home" /> : <SignIn />} />
+          <Route path="/" element={isAuth ? <Navigate to="/home" /> : <SignIn />} />
           <Route path="/home" element={isAuth ? <HomePage /> : <Navigate to="/" />} />
-          <Route path="/login" element={<SignIn />} />
-          <Route path="/register" element={<SignUp />} />
+          <Route path="/login" element={isAuth ? <Navigate to="/" /> : <SignIn />} />
+          <Route path="/register" element={isAuth ? <Navigate to="/" /> : <SignUp />} />
           <Route path="/profile/:id" element={isAuth ? <ProfilePage /> : <Navigate to="/" />} />
-          {/** <Route path="*" element={<Navigate to="/" replace />} />*/}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
     </div>

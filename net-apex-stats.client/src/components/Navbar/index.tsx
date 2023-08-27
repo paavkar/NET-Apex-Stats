@@ -1,16 +1,18 @@
 import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
+import {
+  AppBar,
+  Box,
+  Toolbar,
+  IconButton,
+  Typography,
+  Menu,
+  Container,
+  Avatar,
+  Button,
+  Tooltip,
+  MenuItem,
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
-import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -46,12 +48,12 @@ function ResponsiveAppBar() {
   };
 
   const handleClick = (setting: string) => {
-    switch (setting) {
-      case "Logout":
+    switch (setting.toLowerCase()) {
+      case "logout":
         dispatch(setLogout());
         dispatch(setEntries({ entries: [] }));
         break;
-      case "Profile":
+      case "profile":
         navigate(`/profile/${user?.id}`);
         break;
       default:
@@ -68,7 +70,7 @@ function ResponsiveAppBar() {
             variant="h6"
             noWrap
             component="a"
-            href="/"
+            href="/home"
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -112,7 +114,7 @@ function ResponsiveAppBar() {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={() => navigate(`/${page}`)}>
+                <MenuItem key={page} onClick={() => navigate(`/${page.toLowerCase()}`)}>
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
@@ -142,7 +144,7 @@ function ResponsiveAppBar() {
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={() => navigate(`/${page}`)}
+                onClick={() => navigate(`/${page.toLowerCase()}`)}
                 sx={{ my: 2, color: "white", display: "block" }}
               >
                 {page}
@@ -150,11 +152,25 @@ function ResponsiveAppBar() {
             ))}
           </Box>
 
-          <Typography sx={{ marginRight: "1rem" }}>{user?.username}</Typography>
+          <Typography
+            sx={{
+              marginRight: "1rem",
+              mr: 2,
+              fontWeight: 700,
+              letterSpacing: ".1rem",
+              color: "inherit",
+              textDecoration: "none",
+            }}
+            component={"a"}
+            href={`/profile/${user?.id}`}
+          >
+            {user?.username}
+          </Typography>
+
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar />
               </IconButton>
             </Tooltip>
             <Menu

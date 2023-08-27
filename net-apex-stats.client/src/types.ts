@@ -4,8 +4,9 @@ export interface Entry {
     games: number;
     wins: number;
     kills: number;
-    kdr: number;
-    avgDamage: number;
+    deaths: number;
+    damage: number;
+    highestDamage: number;
 }
 
 export interface User {
