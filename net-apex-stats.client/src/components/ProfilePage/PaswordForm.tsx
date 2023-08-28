@@ -1,4 +1,4 @@
-import { Grid, TextField, Button, Snackbar, Alert } from "@mui/material";
+import { Grid, TextField, Button, Snackbar, Alert, Typography, Paper } from "@mui/material";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 
@@ -59,7 +59,13 @@ const PasswordForm = ({ user, token }: Props) => {
   };
 
   return (
-    <div>
+    <Paper
+      elevation={6}
+      sx={{ paddingBottom: "1rem", textAlign: "left", width: "30rem", lineHeight: "60px" }}
+    >
+      <Typography sx={{ marginLeft: "1rem" }} variant="h6">
+        Reset Password
+      </Typography>
       <Formik
         initialValues={{
           currentPassword: "",
@@ -152,6 +158,7 @@ const PasswordForm = ({ user, token }: Props) => {
           );
         }}
       </Formik>
+
       <Snackbar open={displayFormSuccess} autoHideDuration={5000} onClose={handleClose}>
         <Alert variant="filled" onClose={handleClose} severity="success" sx={{ width: "100%" }}>
           Password changed successfully!
@@ -162,7 +169,7 @@ const PasswordForm = ({ user, token }: Props) => {
           {formStatus}
         </Alert>
       </Snackbar>
-    </div>
+    </Paper>
   );
 };
 
