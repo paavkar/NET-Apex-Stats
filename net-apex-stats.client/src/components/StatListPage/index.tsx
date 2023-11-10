@@ -16,6 +16,8 @@ import {
   TableFooter,
   TablePagination,
 } from "@mui/material";
+import { Refresh, Delete } from '@mui/icons-material';
+
 import FirstPageIcon from "@mui/icons-material/FirstPage";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
@@ -158,7 +160,7 @@ const StatListPage = () => {
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - entries.length) : 0;
 
-  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+  const handleChangePage = (_event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage);
   };
 
@@ -168,6 +170,13 @@ const StatListPage = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
+  const refreshEntries = async () => {
+    const { data: entryListFromApi } = await axios.get<Entry[]>(`${apiBaseUrl}/BattleRoyale`, {
+      headers: { Authorization: `bearer ${token}` },
+    });
+    dispatch(setEntries({ entries: entryListFromApi }));
+  }
 
   return (
     <div className="App">
@@ -199,7 +208,9 @@ const StatListPage = () => {
               <TableCell>
                 <strong>Highest Damage</strong>
               </TableCell>
-              <TableCell></TableCell>
+              <TableCell>
+                <Button startIcon={<Refresh />} onClick={() => refreshEntries()}></Button>
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -216,7 +227,7 @@ const StatListPage = () => {
                 <TableCell>{entry.damage}</TableCell>
                 <TableCell>{entry.highestDamage}</TableCell>
                 <TableCell>
-                  <Button variant="contained" color="error" onClick={() => handleDelete(entry.id)}>
+                  <Button startIcon={<Delete />} variant="contained" color="error" onClick={() => handleDelete(entry.id)}>
                     Delete
                   </Button>
                 </TableCell>
