@@ -1,6 +1,6 @@
-﻿using NET_Apex_Stats.Server.Models;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using NET_Apex_Stats.Server.Models;
 
 namespace NET_Apex_Stats.Services
 {
@@ -38,22 +38,39 @@ namespace NET_Apex_Stats.Services
             return user2;
         }
 
-        public async Task<List<BattleRoyale>> GetAsync(string userId)
+        public async Task<List<BattleRoyale>> GetAllAsync(string userId)
         {
             FilterDefinition<BattleRoyale> filter = Builders<BattleRoyale>.Filter.Eq("userId", userId);
             return await _battleRoyaleCollection.Find(filter).ToListAsync();
         }
 
+        public async Task<BattleRoyale> GetAsync(string id)
+        {
+            FilterDefinition<BattleRoyale> filter = Builders<BattleRoyale>.Filter.Eq("Id", id);
+            return _battleRoyaleCollection.Find(filter).First();
+        }
+
+        public async Task<BattleRoyale> UpdateBattleRoyaleAsync(BattleRoyale entity, string userId)
+        {
+            FilterDefinition<BattleRoyale> filter = Builders<BattleRoyale>.Filter.Eq("Id", entity.Id);
+            var foundEntry = _battleRoyaleCollection.Find(filter).First();
+            if (foundEntry != null && foundEntry.userId == userId)
+            {
+                var updatedEntry = await _battleRoyaleCollection.FindOneAndReplaceAsync(filter, entity);
+                return updatedEntry;
+            }
+            return null;
+        }
 
         public async Task DeleteAsync(string id, string userId)
         {
             FilterDefinition<BattleRoyale> filter = Builders<BattleRoyale>.Filter.Eq("Id", id);
-            var findEntry = _battleRoyaleCollection.Find(filter);
-            var entryToDelete = findEntry.First();
+            var foundEntry = _battleRoyaleCollection.Find(filter);
+            var entryToDelete = foundEntry.First();
             if (entryToDelete != null && entryToDelete.userId == userId)
             {
-                await _battleRoyaleCollection.DeleteOneAsync(filter);
-                
+                var result = await _battleRoyaleCollection.DeleteOneAsync(filter);
+
                 return;
             }
             return;

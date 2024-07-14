@@ -1,7 +1,6 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
-using NET_Apex_Stats.Services;
+﻿using Microsoft.AspNetCore.Mvc;
 using NET_Apex_Stats.Server.Models;
+using NET_Apex_Stats.Services;
 using System.Security.Claims;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -28,14 +27,20 @@ namespace NET_Apex_Stats.Controllers
         public async Task<List<BattleRoyale>> Get()
         {
             string userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Sid);
-            return await _mongoDBService.GetAsync(userId);
+            return await _mongoDBService.GetAllAsync(userId);
         }
 
         // GET api/<BattleRoyaleController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> Get(string id)
         {
-            return "value";
+            var entry = await _mongoDBService.GetAsync(id);
+
+            if (entry is null)
+            {
+                return NotFound("No entry found with given Id.");
+            }
+            return Ok(entry);
         }
 
         // POST api/<BattleRoyaleController>
@@ -46,9 +51,8 @@ namespace NET_Apex_Stats.Controllers
             {
                 string userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Sid);
                 battleRoyale.userId = userId;
-                Console.WriteLine(userId);
                 await _mongoDBService.CreateAsync(battleRoyale);
-                return CreatedAtAction(nameof(Get), battleRoyale );
+                return CreatedAtAction(nameof(Get), battleRoyale);
             }
             catch
             {
@@ -58,8 +62,20 @@ namespace NET_Apex_Stats.Controllers
 
         // PUT api/<BattleRoyaleController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(string id, [FromBody] BattleRoyale entry)
         {
+            try
+            {
+                string userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Sid);
+                var updatedEntry = await _mongoDBService.UpdateBattleRoyaleAsync(entry, userId);
+
+                if (updatedEntry is null) return NotFound("No entry found with given Id.");
+                return Ok(updatedEntry);
+            }
+            catch
+            {
+                return Unauthorized("Invalid or missing token");
+            }
         }
 
         // DELETE api/<BattleRoyaleController>/5
@@ -70,12 +86,11 @@ namespace NET_Apex_Stats.Controllers
             {
                 string userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Sid);
                 await _mongoDBService.DeleteAsync(id, userId);
-                return Ok();
+                return NoContent();
             }
             catch
             {
                 return Unauthorized("Invalid or missing token");
-            
             }
         }
     }
